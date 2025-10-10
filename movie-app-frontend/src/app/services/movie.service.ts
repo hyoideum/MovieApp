@@ -14,8 +14,8 @@ export interface Movie {
   providedIn: 'root'
 })
 export class MovieService {
-  private apiUrl = 'https://localhost:5001/api/movies'; // prilagodi prema backendu
-
+  private apiUrl = 'https://localhost:5001/api/movies';
+  
   constructor(private http: HttpClient) {}
 
   getMovies(): Observable<Movie[]> {
