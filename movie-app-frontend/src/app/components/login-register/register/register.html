@@ -1,0 +1,21 @@
+<div class="auth-form">
+  <h2>Registracija</h2>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <label>Korisničko ime</label>
+    <input type="text" formControlName="username" />
+
+    <label>Lozinka</label>
+    <input type="password" formControlName="password" />
+
+    @if (message) {
+      <p class="success">{{ message }}</p>
+    }
+
+    @if (errorMessage) {
+      <p class="error">{{ errorMessage }}</p>
+    }
+
+    <button type="submit" [disabled]="form.invalid">Registruj se</button>
+  </form>
+</div>

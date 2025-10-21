@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using MovieApp.Data;
 using MovieApp.DTOs;
 using MovieApp.Models;
+using System.Security.Claims;
 
 namespace MovieApp.Controllers;
 
@@ -62,19 +63,34 @@ public class MoviesController : ControllerBase
     [Authorize]
     public IActionResult PostRating(int id, RatingDto ratingDto)
     {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        if (userIdClaim == null)
+            return Unauthorized();
+        
+        var userId = int.Parse(userIdClaim.Value);
+
         var movie = _context.Movies.Include(movie => movie.Ratings).FirstOrDefault(m => m.Id == id);
         if (movie == null)
             return NotFound();
         
+        var existingRating = movie.Ratings.FirstOrDefault(r => r.UserId == userId);
+        if (existingRating != null)
+        {
+            return BadRequest("Već ste ocijenili ovaj film.");
+        }
+        
         var rating = _mapper.Map<Rating>(ratingDto);
         rating.MovieId = movie.Id;
+        rating.UserId = userId;
         
         _context.Ratings.Add(rating);
         _context.SaveChanges();
         
-        var average = movie.Ratings.Average(r =>  r.Value);
+        // movie = _context.Movies
+        //     .Include(m => m.Ratings)
+        //     .FirstOrDefault(m => m.Id == id);
         
         var movieDto = _mapper.Map<MovieDto>(movie);
-        return Ok(new {Movie = movieDto, AverageRating = average});
+        return Ok(movieDto);
     }
 }

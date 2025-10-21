@@ -1,1 +1,23 @@
-<p>movie-detail works!</p>
+@if (loading) {
+  <div>Učitavanje...</div>
+}
+
+<div class="container">
+  <h2>{{ movie.title }}</h2>
+   <p><strong>Release year:</strong> {{ movie.year }}</p>
+   ⭐ Prosječna ocjena: {{ movie.averageRating || 'N/A' }}
+
+@if (movie.ratings) {
+    <h3>Ocjene:</h3>
+        <ul>
+            @for (rating of movie.ratings; track $index) {
+                <li>
+                    ⭐ {{ rating }} / 10
+                </li>
+            }
+        </ul>
+}
+@else {
+    <p>Nema ocjena za ovaj film.</p>
+}
+</div>

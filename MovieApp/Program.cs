@@ -1,4 +1,5 @@
 using System.Text;
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using MovieApp.Data;
@@ -6,11 +7,22 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MovieApp.Services;
+using MovieApp.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularClient",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:4200") // frontend adresa
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -34,6 +46,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateRatingDtoValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateMovieDtoValidator>();
 builder.Services.AddControllers();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddEndpointsApiExplorer();
@@ -76,6 +90,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("AllowAngularClient");
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

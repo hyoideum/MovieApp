@@ -1,0 +1,51 @@
+#details {
+    margin-top: 10px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+button { 
+    border-radius: 15%;
+    background-color: grey;
+    color: blue;
+}
+
+.add-rating {
+    margin-left: 20px;
+}
+
+message {
+  margin-top: 5px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: opacity 0.5s ease;
+  opacity: 1;
+}
+
+/* Animacija nestajanja */
+.fade-out {
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
+
+/* Stilovi po tipu poruke */
+.success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.error {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.warning {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.info {
+  background-color: #d1ecf1;
+  color: #0c5460;
+}

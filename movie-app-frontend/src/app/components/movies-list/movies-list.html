@@ -1,1 +1,59 @@
-<p>movies-list works!</p>
+<div class="container">
+  <h2>Filmovi</h2>
+@if (loading) {
+  <div>Učitavanje...</div>
+}
+  @if (movies.length > 0) {
+  <ul>
+    @for (movie of movies; track movie.id) {
+    <li>
+      <strong>{{ movie.title }}</strong> ({{ movie.year }})<br />
+      {{ movie.genre }}<br />
+      ⭐ Prosječna ocjena: {{ (movie.averageRating | number : '1.2-2') || 'N/A' }}
+      <!--  -->
+    <br>
+      <button id='details' [routerLink]="['/movies', movie.id]">Detalji</button>
+    <br>
+    <form [formGroup]="form" (ngSubmit)="RateMovie(movie.id)">
+      @if (authService.isLoggedIn()) {
+        <label for="rating">Tvoja ocjena (1–10):</label>
+      <br>
+        <input id="rating" type="number" formControlName="rating" min="1" max="10" placeholder="1">
+        <button type="submit" [disabled]="form.invalid">Ocjeni</button>
+      } @else {
+      <p>🔒 Samo prijavljeni korisnici mogu ocjenjivati filmove.</p>
+      }
+
+      @if (messages[movie.id]) {
+      <div
+        class="message"
+        [ngClass]="{
+          'success': messages[movie.id].type === 'success',
+          'error': messages[movie.id].type === 'error',
+          'warning': messages[movie.id].type === 'warning',
+          'info': messages[movie.id].type === 'info',
+          'fade-out': messages[movie.id].fade
+        }"
+      >
+        {{ messages[movie.id].text  }}
+      </div>
+      }
+    </form>
+     @if (form.get('rating')?.invalid && form.get('rating')?.touched) {
+    <div class="error">
+      @if (form.get('rating')?.errors?.['required']) {
+        <span>Ocjena je obavezna.</span>
+      }
+      @if (form.get('rating')?.errors?.['min'] || form.get('rating')?.errors?.['max']) {
+        <span>Ocjena mora biti između 1 i 10.</span>
+      }
+    </div>
+    }
+    </li>
+    <br>
+    }
+  </ul>
+} @else {
+  <p>Nema filmova.</p>
+}
+</div>
