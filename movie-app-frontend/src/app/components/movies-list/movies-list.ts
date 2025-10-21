@@ -20,7 +20,6 @@ export class MoviesListComponent {
   rating: Record<number, number>  = {};
   lastRatedMovieId: number | null = null;
   form: any;
-  // message: string | null = null;
   messageType: 'success' | 'error' | 'warning' | 'info' | null = null;
   messages: { [movieId: number]: { text: string, type: string, fade: boolean } } = {};
 

@@ -1,1 +1,29 @@
-<p>create-movie works!</p>
+<div class="form">
+  <h2>Kreiraj film</h2>
+
+  <form [formGroup]="form" (ngSubmit)="CreateMovie()">
+    <label>Movie title</label>
+    <input type="text" formControlName="title" />
+    @if(serverErrors?.Title) {
+        <div class="error">
+            {{ serverErrors.Title[0] }}
+        </div>
+    }
+    <label>Movie genre</label>
+    <input type="text" formControlName="genre" />
+     @if(serverErrors?.Genre) {
+        <div class="error">
+            {{ serverErrors.Genre[0] }}
+        </div>
+    }
+    <label>Release year</label>
+    <input type="number" formControlName="year" />
+     @if(serverErrors?.Year) {
+        <div class="error">
+            {{ serverErrors.Year[0] }}
+        </div>
+    }
+
+    <button type="submit" [disabled]="form.invalid">Sumbit</button>
+  </form>
+</div>

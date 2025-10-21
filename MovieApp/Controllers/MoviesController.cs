@@ -49,8 +49,11 @@ public class MoviesController : ControllerBase
     
     [HttpPost]
     [Authorize]
-    public IActionResult PostMovie(MovieDto createMovie)
+    public IActionResult PostMovie([FromBody] CreateMovieDto createMovie)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+        
         var movie = _mapper.Map<Movie>(createMovie);
         _context.Movies.Add(movie);
         _context.SaveChanges();

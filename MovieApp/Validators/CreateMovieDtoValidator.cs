@@ -19,7 +19,10 @@ public class CreateMovieDtoValidator : AbstractValidator<CreateMovieDto>
 
         RuleFor(m => m.Year)
             .NotEmpty().WithMessage("Year is required")
-            .InclusiveBetween(1990, currentYear)
+            .InclusiveBetween(1900, currentYear)
             .WithMessage($"Release year must be between 1900 and {currentYear}");
     }
 }
+
+
+   
