@@ -8,15 +8,12 @@ import { environment } from '../../environments/environment.development';
 })
 
 export class AuthService {
-  private apiUrl = "";
-  //  'https://localhost:44354/api/auth';
+  private apiUrl = `${environment.apiUrl}/auth`;
   private tokenKey = 'auth_token';
 
   isLoggedIn = signal<boolean>(this.hasToken());
 
-  constructor(private http: HttpClient) {
-        this.apiUrl = http.get(`${environment.apiUrl}/auth`).toString();
-  }
+  constructor(private http: HttpClient) {}
 
   register(data: { username: string; password: string }) {
     return this.http.post(`${this.apiUrl}/register`, data);
