@@ -96,7 +96,6 @@ export class MoviesListComponent {
   nextPage() {
     if (this.page * this.pageSize < this.totalCount) {
       this.page = this.page + 1;
-      console.log(this.page);
       this.loadMovies();
     }
   }
@@ -104,7 +103,6 @@ export class MoviesListComponent {
   prevPage() {
     if (this.page > 1) {
       this.page = this.page - 1;
-      console.log(this.page);
       this.loadMovies();
     }
   }
