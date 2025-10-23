@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
+import { I18nService } from '../../../services/i18n.service';
 
 @Component({
   selector: 'app-register-component',
@@ -16,7 +17,7 @@ export class RegisterComponent {
   message = '';
   errorMessage = '';
 
-  constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {
+  constructor(private fb: FormBuilder, private auth: AuthService, private router: Router, public i18n: I18nService) {
     this.form = this.fb.group({
     username: ['', Validators.required],
     password: ['', [Validators.required, Validators.minLength(6)]]

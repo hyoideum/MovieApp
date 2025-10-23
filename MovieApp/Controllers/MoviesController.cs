@@ -24,13 +24,48 @@ public class MoviesController : ControllerBase
     
     // GET: api/movies
     [HttpGet]
-    public IActionResult GetMovies()
+    public IActionResult GetMovies([FromQuery] int page = 1, [FromQuery] int pageSize = 10, [FromQuery] string sortBy = "title", [FromQuery] string sortOrder = "asc")
     {
-        var movies = _context.Movies
-            .Include(movie => movie.Ratings)
+        if (page < 1) page = 1;
+        if (pageSize < 1) pageSize = 10;
+        
+        var query = _context.Movies
+            .Include(m => m.Ratings)
+            .AsQueryable();
+        
+        query = sortBy.ToLower() switch
+        {
+            "year" => sortOrder == "desc"
+                ? query.OrderByDescending(m => m.Year)
+                : query.OrderBy(m => m.Year),
+
+            "rating" => sortOrder == "desc"
+                ? query.OrderByDescending(m => m.Ratings.Any() ? m.Ratings.Average(r => r.Value) : 0)
+                : query.OrderBy(m => m.Ratings.Any() ? m.Ratings.Average(r => r.Value) : 0),
+
+            "title" => sortOrder == "desc"
+                ? query.OrderByDescending(m => m.Title)
+                : query.OrderBy(m => m.Title),
+
+            _ => query.OrderBy(m => m.Title)
+        };
+
+        var totalCount = query.Count();
+        
+        var movies = query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .ToList();
+
         var moviesDto = _mapper.Map<List<MovieDto>>(movies);
-        return Ok(moviesDto);
+
+        var result = new PagedResultDto<MovieDto>
+        {
+            Items = moviesDto,
+            TotalCount = totalCount
+        };
+
+        return Ok(result);
     }
 
     [HttpGet("{id}")]

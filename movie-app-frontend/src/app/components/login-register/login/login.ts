@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
+import { I18nService } from '../../../services/i18n.service';
 
 @Component({
   selector: 'app-login',
@@ -15,7 +16,7 @@ export class LoginComponent {
 
    errorMessage = '';
 
-   constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {
+   constructor(private fb: FormBuilder, private auth: AuthService, private router: Router, public i18n: I18nService) {
     this.form = this.fb.group({
     username: ['', [Validators.required]],
     password: ['', [Validators.required]]

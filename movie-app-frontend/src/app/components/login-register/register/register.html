@@ -1,11 +1,11 @@
 <div class="auth-form">
-  <h2>Registracija</h2>
+  <h2>{{ i18n.get('login.register')}}</h2>
 
   <form [formGroup]="form" (ngSubmit)="submit()">
-    <label>Korisničko ime</label>
+    <label>{{ i18n.get('login.username')}}</label>
     <input type="text" formControlName="username" />
 
-    <label>Lozinka</label>
+    <label>{{ i18n.get('login.password')}}</label>
     <input type="password" formControlName="password" />
 
     @if (message) {
@@ -16,6 +16,6 @@
       <p class="error">{{ errorMessage }}</p>
     }
 
-    <button type="submit" [disabled]="form.invalid">Registruj se</button>
+    <button type="submit" [disabled]="form.invalid">{{ i18n.get('login.register')}}</button>
   </form>
 </div>

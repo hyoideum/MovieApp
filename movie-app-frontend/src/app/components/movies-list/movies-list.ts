@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { Movie } from '../../models/movie';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
+import { I18nService } from '../../services/i18n.service';
 
 @Component({
   selector: 'app-movies-list',
@@ -16,6 +17,12 @@ import { AuthService } from '../../services/auth.service';
 
 export class MoviesListComponent {
   movies: Movie[] = [];
+  page: number = 1;
+  pageSize: number = 5;
+  sortBy: string = 'title';
+  sortOrder: string = 'asc';
+  totalCount: number = 0;
+  totalPages: number = 1;
   loading = true;
   rating: Record<number, number>  = {};
   lastRatedMovieId: number | null = null;
@@ -23,16 +30,20 @@ export class MoviesListComponent {
   messageType: 'success' | 'error' | 'warning' | 'info' | null = null;
   messages: { [movieId: number]: { text: string, type: string, fade: boolean } } = {};
 
-   constructor(private movieService: MovieService, private fb: FormBuilder, public authService: AuthService) {
+   constructor(private movieService: MovieService, private fb: FormBuilder, public authService: AuthService,
+    public i18n: I18nService) {
     this.form = this.fb.group({
     rating: [null, [Validators.required, Validators.min(1), Validators.max(10)]]
     });
+    this.loadMovies();
    }
 
-   ngOnInit(): void {
-    this.movieService.getMovies().subscribe({
+  loadMovies() {
+    this.movieService.getMovies(this.page, this.pageSize, this.sortBy, this.sortOrder).subscribe({
       next: (data) => {
-        this.movies = data;
+        this.movies = data.items;
+        this.totalCount = data.totalCount;
+        this.totalPages = Math.ceil(this.totalCount / this.pageSize);
         this.loading = false;
       },
       error: (err) => {
@@ -80,5 +91,31 @@ export class MoviesListComponent {
         }, 3000);
       }
     })
+  }
+
+  nextPage() {
+    if (this.page * this.pageSize < this.totalCount) {
+      this.page = this.page + 1;
+      console.log(this.page);
+      this.loadMovies();
+    }
+  }
+
+  prevPage() {
+    if (this.page > 1) {
+      this.page = this.page - 1;
+      console.log(this.page);
+      this.loadMovies();
+    }
+  }
+
+  onSortChange(event: any) {
+    this.sortBy = event.target.value;
+    this.loadMovies();
+  }
+
+  onSortOrderChange(event: any) {
+    this.sortOrder = event.target.value;
+    this.loadMovies();
   }
 }

@@ -1,0 +1,76 @@
+.movie-detail-card {
+  max-width: 700px;
+  margin: 50px auto;
+  background: #fff;
+  padding: 30px 40px;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.movie-title {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.movie-info p {
+  font-size: 1.1rem;
+  color: #555;
+  margin: 8px 0;
+}
+
+.ratings-section {
+  margin-top: 25px;
+}
+
+.ratings-section h3 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.ratings-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.ratings-section li {
+  background: #f7f9fc;
+  border-radius: 8px;
+  margin: 6px 0;
+  padding: 10px;
+  font-size: 1rem;
+}
+
+.no-ratings {
+  color: #888;
+  margin-top: 20px;
+}
+
+.loading {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #666;
+  margin-top: 50px;
+}
+
+.back-button-container {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.back-button {
+  background-color: #4a90e2;
+  color: #fff;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.back-button:hover {
+  background-color: #357abd;
+}

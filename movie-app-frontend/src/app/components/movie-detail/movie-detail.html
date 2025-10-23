@@ -1,23 +1,32 @@
 @if (loading) {
-  <div>Učitavanje...</div>
-}
+  <div class="loading">{{ i18n.get('messages.loading') }}</div>
+} @else {
+    <div class="movie-detail-card">
+    <h2 class="movie-title">{{ movie.title }}</h2>
 
-<div class="container">
-  <h2>{{ movie.title }}</h2>
-   <p><strong>Release year:</strong> {{ movie.year }}</p>
-   ⭐ Prosječna ocjena: {{ movie.averageRating || 'N/A' }}
+    <div class="movie-info">
+        <p><strong>{{ i18n.get('movies.genre') }}:</strong> {{ movie.genre }}</p>
+        <p><strong>{{ i18n.get('movies.releaseYear') }}:</strong> {{ movie.year }}</p>
+        <p><strong>⭐ {{ i18n.get('movies.averageRating') }}:</strong> {{ movie.averageRating || 'N/A' }}</p>
+    </div>
 
-@if (movie.ratings) {
-    <h3>Ocjene:</h3>
+    @if (movie.ratings) {
+        <div class="ratings-section">
+        <h3>{{ i18n.get('movies.ratings') }}</h3>
         <ul>
             @for (rating of movie.ratings; track $index) {
-                <li>
-                    ⭐ {{ rating }} / 10
-                </li>
+            <li>⭐ {{ rating }} / 10</li>
             }
         </ul>
+        </div>
+    } @else {
+        <p class="no-ratings">{{ i18n.get('movies.noRatings') || 'Nema ocjena za ovaj film.' }}</p>
+    }
+    </div>
 }
-@else {
-    <p>Nema ocjena za ovaj film.</p>
-}
+
+<div class="back-button-container">
+  <button class="back-button" [routerLink]="['/movies']">
+    ← {{ i18n.get('movies.backToList') || 'Nazad na listu filmova' }}
+  </button>
 </div>

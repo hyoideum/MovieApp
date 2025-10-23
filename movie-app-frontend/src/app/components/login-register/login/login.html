@@ -1,17 +1,17 @@
 <div class="auth-form">
-  <h2>Prijava</h2>
+  <h2>{{ i18n.get('login.login')}}</h2>
 
   <form [formGroup]="form" (ngSubmit)="submit()">
-    <label>Username</label>
+    <label>{{ i18n.get('login.username')}}</label>
     <input type="username" formControlName="username" />
 
-    <label>Lozinka</label>
+    <label>{{ i18n.get('login.password')}}</label>
     <input type="password" formControlName="password" />
 
     @if (errorMessage) {
       <p class="error">{{ errorMessage }}</p>
     }
 
-    <button type="submit" [disabled]="form.invalid">Prijavi se</button>
+    <button type="submit" [disabled]="form.invalid">{{ i18n.get('login.login')}}</button>
   </form>
 </div>

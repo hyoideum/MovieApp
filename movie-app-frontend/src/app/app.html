@@ -1,10 +1,24 @@
-<nav style="margin-bottom: 16px;">
-  <a routerLink="/movies" routerLinkActive="active">Movies</a> |
-  <a routerLink="/add-movie" routerLinkActive="active">Add Movie</a> |
-  <a routerLink="/login" routerLinkActive="active">Login</a> |
-  <a routerLink="/register" routerLinkActive="active">Register</a>
+<nav class="navbar">
+  <div class="nav-links">
+    <a routerLink="/movies" routerLinkActive="active">{{ i18nService.get("routes.movies") }}</a>
+    @if (authService.isLoggedIn()) {
+      <a routerLink="/add-movie" routerLinkActive="active">{{ i18nService.get("routes.addMovie") }}</a>
+    }
+    <a routerLink="/login" routerLinkActive="active">{{ i18nService.get("routes.login") }}</a>
+    <a routerLink="/register" routerLinkActive="active">{{ i18nService.get("routes.register") }}</a>
+  </div>
+
+  <div class="language-switcher">
+    <!-- <button class="lang" (click)="changeLanguage('en')"><img src="../assets/flags/eng.png" alt="English"/></button>
+    <button class="lang" (click)="changeLanguage('hr')"><img src="../assets/flags/cro.png" alt="Hrvatski"/></button> -->
+    <button class="lang" (click)="changeLanguage('en')">EN</button>
+    <button class="lang" (click)="changeLanguage('hr')">HR</button>
+    @if(authService.isLoggedIn()) {
+      <button class="logout-btn" (click)="logout()">{{ i18nService.get('routes.logout') }}</button>
+    }
+  </div>
 </nav>
 
 <hr>
 
-<router-outlet />
+<router-outlet></router-outlet>

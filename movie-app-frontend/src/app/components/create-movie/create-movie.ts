@@ -4,6 +4,7 @@ import { MovieService } from '../../services/movie.service';
 import { dateTimestampProvider } from 'rxjs/internal/scheduler/dateTimestampProvider';
 import { MovieDto } from '../../models/dtos/movieDto';
 import { Router } from '@angular/router';
+import { I18nService } from '../../services/i18n.service';
 
 @Component({
   selector: 'app-create-movie',
@@ -18,7 +19,7 @@ export class CreateMovieComponent {
   message: string | null = null;
   serverErrors: any = {};
 
-  constructor(private movieService: MovieService, private fb: FormBuilder, private router: Router) {
+  constructor(private movieService: MovieService, private fb: FormBuilder, private router: Router, public i18n: I18nService) {
     this.form = this.fb.group({
     title: ["", [Validators.required, Validators.maxLength(250)]],
     genre: ["", [Validators.required, Validators.maxLength(100)]],

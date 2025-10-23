@@ -1,22 +1,22 @@
 <div class="form">
-  <h2>Kreiraj film</h2>
+  <h2>{{ i18n.get('movies.createMovie')}}</h2>
 
   <form [formGroup]="form" (ngSubmit)="CreateMovie()">
-    <label>Movie title</label>
+    <label>{{ i18n.get('movies.movieTitle')}}</label>
     <input type="text" formControlName="title" />
     @if(serverErrors?.Title) {
         <div class="error">
             {{ serverErrors.Title[0] }}
         </div>
     }
-    <label>Movie genre</label>
+    <label>{{ i18n.get('movies.genre')}}</label>
     <input type="text" formControlName="genre" />
      @if(serverErrors?.Genre) {
         <div class="error">
             {{ serverErrors.Genre[0] }}
         </div>
     }
-    <label>Release year</label>
+    <label>{{ i18n.get('movies.releaseYear')}}</label>
     <input type="number" formControlName="year" />
      @if(serverErrors?.Year) {
         <div class="error">
