@@ -3,14 +3,17 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Movie } from '../models/movie';
 import { MovieDto } from '../models/dtos/movieDto';
+import { environment } from '../../environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MovieService {
-  private apiUrl = 'https://localhost:44354/api/movies';
+  private apiUrl = "";
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    this.apiUrl = http.get(`${environment.apiUrl}/movies`).toString();
+  }
 
   getMovies(page: number = 1, pageSize: number = 10, sortBy: string = 'title', sortOrder: string = 'asc'): Observable<{items: Movie[], totalCount: number}> {
      let params = new HttpParams()
