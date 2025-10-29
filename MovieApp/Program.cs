@@ -47,6 +47,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 var connectionString = Environment.GetEnvironmentVariable("DEFAULT_CONNECTION") 
                        ?? builder.Configuration.GetConnectionString("DefaultConnection");
+Console.WriteLine($"Connection string: {connectionString}");
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
 builder.Services.AddAuthorization();
