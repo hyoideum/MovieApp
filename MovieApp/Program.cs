@@ -18,7 +18,8 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAngularClient",
         policy =>
         {
-            policy.WithOrigins("https://movieapp-0c5b.onrender.com", "http://localhost:4200", "https://movie-ejq4lbytv-ivanas-projects-0b8587ba.app")
+            policy.WithOrigins("https://movieapp-0c5b.onrender.com", "http://localhost:4200")
+                .SetIsOriginAllowed(origin => origin.Contains("vercel.app") || origin.Contains("localhost"))
                 .AllowAnyHeader()
                 .AllowAnyMethod();
         });
