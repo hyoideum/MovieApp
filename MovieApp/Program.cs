@@ -48,6 +48,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 var connectionString = Environment.GetEnvironmentVariable("DEFAULT_CONNECTION") 
                        ?? builder.Configuration.GetConnectionString("DefaultConnection");
 Console.WriteLine($"Connection string: {connectionString}");
+if (string.IsNullOrWhiteSpace(connectionString))
+{
+    Console.WriteLine("❌ Nema konekcijskog stringa! Provjeri environment varijable na Renderu.");
+}
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
 builder.Services.AddAuthorization();
