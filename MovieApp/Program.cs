@@ -18,7 +18,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAngularClient",
         policy =>
         {
-            policy.WithOrigins("https://movieapp-0c5b.onrender.com", "http://localhost:4200")
+            policy
                 .SetIsOriginAllowed(origin => origin.Contains("vercel.app") || origin.Contains("localhost"))
                 .AllowAnyHeader()
                 .AllowAnyMethod();
@@ -48,11 +48,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 var connectionString = Environment.GetEnvironmentVariable("DEFAULT_CONNECTION") 
                        ?? builder.Configuration.GetConnectionString("DefaultConnection");
-Console.WriteLine($"Connection string: {connectionString}");
-if (string.IsNullOrWhiteSpace(connectionString))
-{
-    Console.WriteLine("❌ Nema konekcijskog stringa! Provjeri environment varijable na Renderu.");
-}
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
 builder.Services.AddAuthorization();
@@ -102,13 +97,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
     app.UseHttpsRedirection();
-    
 }
 
 app.UseCors("AllowAngularClient");
 app.UseAuthentication();
 app.UseAuthorization();
-
 
 if (!app.Environment.IsDevelopment())
 {
@@ -135,8 +128,6 @@ app.MapGet("/weatherforecast", () =>
     })
     .WithName("GetWeatherForecast")
     .WithOpenApi();
-
-Console.WriteLine($"Environment: {builder.Environment.EnvironmentName}");
 
 app.MapControllers();
 app.Run();
