@@ -18,8 +18,13 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAngularClient",
         policy =>
         {
+            
             policy
-                .SetIsOriginAllowed(origin => origin.Contains("vercel.app") || origin.Contains("localhost"))
+                .WithOrigins(
+                    "https://movieapp-0c5b.onrender.com",
+                    "https://movie-24dpy56bl-ivanas-projects-0b8587ba.vercel.app",
+                    "http://localhost:4200")
+                // .SetIsOriginAllowed(origin => origin.Contains("vercel.app") || origin.Contains("localhost"))
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials();
@@ -92,6 +97,9 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 var app = builder.Build();
+app.UseCors("AllowAngularClient");
+app.UseAuthentication();
+app.UseAuthorization();
 
 if (app.Environment.IsDevelopment())
 {
@@ -99,10 +107,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
     app.UseHttpsRedirection();
 }
-
-app.UseCors("AllowAngularClient");
-app.UseAuthentication();
-app.UseAuthorization();
 
 if (!app.Environment.IsDevelopment())
 {
