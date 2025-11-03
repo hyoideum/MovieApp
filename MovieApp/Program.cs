@@ -21,7 +21,6 @@ builder.Services.AddCors(options =>
             
             policy
                 .WithOrigins(
-                    "https://movieapp-0c5b.onrender.com",
                     "https://movie-24dpy56bl-ivanas-projects-0b8587ba.vercel.app",
                     "http://localhost:4200")
                 // .SetIsOriginAllowed(origin => origin.Contains("vercel.app") || origin.Contains("localhost"))
