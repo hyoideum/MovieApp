@@ -21,7 +21,8 @@ builder.Services.AddCors(options =>
             policy
                 .SetIsOriginAllowed(origin => origin.Contains("vercel.app") || origin.Contains("localhost"))
                 .AllowAnyHeader()
-                .AllowAnyMethod();
+                .AllowAnyMethod()
+                .AllowCredentials();
         });
 });
 
