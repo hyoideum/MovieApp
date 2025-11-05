@@ -18,15 +18,15 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAngularClient",
         policy =>
         {
-            
+
             policy
                 .WithOrigins(
                     "https://movie-24dpy56bl-ivanas-projects-0b8587ba.vercel.app",
                     "http://localhost:4200")
                 // .SetIsOriginAllowed(origin => origin.Contains("vercel.app") || origin.Contains("localhost"))
                 .AllowAnyHeader()
-                .AllowAnyMethod()
-                // .AllowCredentials();
+                .AllowAnyMethod();
+            // .AllowCredentials();
         });
 });
 
