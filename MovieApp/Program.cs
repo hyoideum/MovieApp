@@ -24,8 +24,8 @@ builder.Services.AddCors(options =>
                     "https://movie-24dpy56bl-ivanas-projects-0b8587ba.vercel.app",
                     "http://localhost:4200")
                 // .SetIsOriginAllowed(origin => origin.Contains("vercel.app") || origin.Contains("localhost"))
-                .AllowAnyMethod()
                 .AllowAnyHeader()
+                .AllowAnyMethod()
                 .AllowCredentials();
         });
 });
@@ -96,6 +96,22 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 var app = builder.Build();
+
+app.Use(async (context, next) =>
+{
+    if (context.Request.Method == "OPTIONS")
+    {
+        context.Response.Headers.Add("Access-Control-Allow-Origin", "https://movie-24dpy56bl-ivanas-projects-0b8587ba.vercel.app");
+        context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization");
+        context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        context.Response.StatusCode = 200;
+        await context.Response.CompleteAsync();
+        return;
+    }
+
+    await next();
+});
+
 app.UseCors("AllowAngularClient");
 app.UseAuthentication();
 app.UseAuthorization();
