@@ -35,6 +35,24 @@ export class AuthService {
     );
   }
 
+  // checkIsLoggedIn(): boolean {
+  //   const token = this.getToken();
+  //   if (!token) return false;
+
+  //   try {
+  //     const payload = JSON.parse(atob(token.split('.')[1]));
+  //     const isExpired = Date.now() >= payload.exp * 1000;
+  //     if (isExpired) {
+  //       this.removeToken();
+  //       return false;
+  //     }
+  //     return true;
+  //   } catch {
+  //     this.removeToken();
+  //     return false;
+  //   }
+  // }
+
   logout() {
     localStorage.removeItem(this.tokenKey);
     this.isLoggedIn.set(false);
