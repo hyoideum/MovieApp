@@ -33,6 +33,7 @@ export class MovieService {
   }
 
   postMovie(movie: MovieDto): Observable<Movie> {
-    return this.http.post<Movie>(this.apiUrl, movie);
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.post<Movie>(this.apiUrl, {movie}, {headers});
   }
 }
