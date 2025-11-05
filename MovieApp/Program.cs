@@ -100,6 +100,9 @@ app.UseCors("AllowAngularClient");
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapMethods("{*path}", ["OPTIONS"], () => Results.Ok())
+    .RequireCors("AllowAngularClient");
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
