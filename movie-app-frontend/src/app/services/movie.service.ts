@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Movie } from '../models/movie';
@@ -28,7 +28,8 @@ export class MovieService {
   }
 
   postRating(id: number, value: any): Observable<Movie> {
-    return this.http.post<Movie>(`${this.apiUrl}/${id}/ratings`, value);
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.post<Movie>(`${this.apiUrl}/${id}/ratings`, {value} , {headers});
   }
 
   postMovie(movie: MovieDto): Observable<Movie> {
