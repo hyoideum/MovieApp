@@ -1,19 +1,26 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, signal } from '@angular/core';
-import { tap } from 'rxjs';
+import { BehaviorSubject, tap } from 'rxjs';
 import { environment } from '../../environments/environment.development';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class AuthService {
+  private jwtHelper = new JwtHelperService();
   private apiUrl = `${environment.apiUrl}/auth`;
   private tokenKey = 'auth_token';
 
   isLoggedIn = signal<boolean>(this.hasToken());
 
   constructor(private http: HttpClient) {}
+
+  // private hasValidToken(): boolean {
+  //   const token = localStorage.getItem('token');
+  //   return token != null && !this.jwtHelper.isTokenExpired(token);
+  // }
 
   register(data: { username: string; password: string }) {
     return this.http.post(`${this.apiUrl}/register`, data);
@@ -39,5 +46,12 @@ export class AuthService {
 
   private hasToken(): boolean {
     return !!localStorage.getItem(this.tokenKey);
+  }
+
+  checkTokenExpiration() {
+    const token = localStorage.getItem('token');
+    if (!token || this.jwtHelper.isTokenExpired(token)) {
+      this.logout();
+    }
   }
 }

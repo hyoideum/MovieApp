@@ -15,6 +15,10 @@ export class App {
 
   constructor(public i18nService: I18nService, public authService: AuthService) {}
 
+  ngOnInit() {
+    this.authService.checkTokenExpiration();
+  }
+
   changeLanguage(lang: 'en' | 'hr') {
     this.i18nService.setLanguage(lang);
   }
