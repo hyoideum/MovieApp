@@ -21,7 +21,6 @@ builder.Services.AddCors(options =>
            policy
                .WithOrigins("http://localhost:4200",
                    "https://movie-24dpy56bl-ivanas-projects-0b8587ba.vercel.app")
-               // .SetIsOriginAllowed(origin => origin.Contains("vercel.app") || origin.Contains("localhost"))
                .AllowAnyHeader()
                .AllowAnyMethod()
                .AllowCredentials();
@@ -54,8 +53,6 @@ var connectionString = Environment.GetEnvironmentVariable("DEFAULT_CONNECTION")
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
 builder.Services.AddAuthorization();
-// builder.Services.AddDbContext<AppDbContext>(options => 
-//     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddControllers();
 builder.Services.AddFluentValidationAutoValidation();
@@ -94,21 +91,6 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 var app = builder.Build();
-
-// app.Use(async (context, next) =>
-// {
-//     if (context.Request.Method == "OPTIONS")
-//     {
-//         context.Response.Headers.Add("Access-Control-Allow-Origin", "https://movie-24dpy56bl-ivanas-projects-0b8587ba.vercel.app");
-//         context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization");
-//         context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-//         context.Response.StatusCode = 200;
-//         await context.Response.CompleteAsync();
-//         return;
-//     }
-//
-//     await next();
-// });
 
 app.UseCors("AllowAngularClient");
 app.UseAuthentication();
