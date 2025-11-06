@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, signal } from '@angular/core';
-import { BehaviorSubject, tap } from 'rxjs';
+import { tap } from 'rxjs';
 import { environment } from '../../environments/environment.development';
 import { JwtHelperService } from '@auth0/angular-jwt';
 
