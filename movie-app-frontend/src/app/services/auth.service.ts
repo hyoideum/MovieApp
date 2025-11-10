@@ -15,7 +15,9 @@ export class AuthService {
 
   isLoggedIn = signal<boolean>(this.hasToken());
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    this.checkTokenExpiration();
+  }
 
   register(data: { username: string; password: string }) {
     return this.http.post(`${this.apiUrl}/register`, data);
