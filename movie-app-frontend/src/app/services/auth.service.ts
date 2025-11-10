@@ -9,13 +9,13 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 })
 
 export class AuthService {
-  // private jwtHelper = new JwtHelperService();
+  private jwtHelper = new JwtHelperService();
   private apiUrl = `${environment.apiUrl}/auth`;
   private tokenKey = 'auth_token';
 
   isLoggedIn = signal<boolean>(this.hasToken());
 
-  constructor(private http: HttpClient, private jwtHelper: JwtHelperService) {
+  constructor(private http: HttpClient) {
     console.log('AuthService initialized');
     this.checkTokenExpiration();
   }
