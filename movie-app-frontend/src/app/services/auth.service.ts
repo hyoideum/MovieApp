@@ -16,6 +16,7 @@ export class AuthService {
   isLoggedIn = signal<boolean>(this.hasToken());
 
   constructor(private http: HttpClient) {
+    console.log('AuthService initialized');
     this.checkTokenExpiration();
   }
 
@@ -38,7 +39,12 @@ export class AuthService {
   }
 
   getToken(): string | null {
-    return localStorage.getItem(this.tokenKey);
+    const token = localStorage.getItem(this.tokenKey);
+    if (token && this.jwtHelper.isTokenExpired(token)) {
+      this.logout();
+      return null;
+    }
+    return token;
   }
 
   private hasToken(): boolean {
