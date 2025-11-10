@@ -21,5 +21,5 @@ bootstrapApplication(App, {
       deps: [AuthService],
       multi: true
     }
-    ],
+  ],
 }).catch((err) => console.error(err));
