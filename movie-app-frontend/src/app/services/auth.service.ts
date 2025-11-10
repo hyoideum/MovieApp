@@ -61,35 +61,51 @@ export class AuthService {
   // }
 
   checkTokenExpiration() {
-  const token = this.getToken();
-  console.log('🟡 Provjera tokena...');
+    const token = localStorage.getItem(this.tokenKey);
 
-  if (!token) {
-    console.warn('⚠️ Nema tokena u localStorage.');
-    this.logout();
-    return;
-  }
+    if (!token) {
+      this.isLoggedIn.set(false);
+      return;
+    }
 
-  try {
-    const decoded: any = this.jwtHelper.decodeToken(token);
-    const exp = decoded?.exp ? new Date(decoded.exp * 1000) : null;
-    const now = new Date();
-    const expired = this.jwtHelper.isTokenExpired(token);
-
-    console.log('🔹 Trenutno vrijeme:', now.toISOString());
-    console.log('🔹 Token exp (UTC):', exp ? exp.toISOString() : 'nema exp');
-    console.log('🔹 Token exp (lokalno):', exp ? exp.toLocaleString() : 'nema exp');
-    console.log('🔹 JWT Helper kaže da je istekao:', expired);
-
-    if (expired) {
-      console.warn('🚫 Token je istekao — korisnik će biti odjavljen.');
+    if (this.jwtHelper.isTokenExpired(token)) {
+      console.warn('Token expired — logging out');
       this.logout();
     } else {
-      console.log('✅ Token je još važeći.');
+      this.isLoggedIn.set(true);
     }
-  } catch (e) {
-    console.error('❌ Greška pri dekodiranju tokena:', e);
-    this.logout();
   }
-}
+
+  // checkTokenExpiration() {
+  // const token = this.getToken();
+  // console.log('🟡 Provjera tokena...');
+
+  // if (!token) {
+  //   console.warn('⚠️ Nema tokena u localStorage.');
+  //   this.logout();
+  //   return;
+  // }
+
+  // try {
+  //   const decoded: any = this.jwtHelper.decodeToken(token);
+  //   const exp = decoded?.exp ? new Date(decoded.exp * 1000) : null;
+  //   const now = new Date();
+  //   const expired = this.jwtHelper.isTokenExpired(token);
+
+  //   console.log('🔹 Trenutno vrijeme:', now.toISOString());
+  //   console.log('🔹 Token exp (UTC):', exp ? exp.toISOString() : 'nema exp');
+  //   console.log('🔹 Token exp (lokalno):', exp ? exp.toLocaleString() : 'nema exp');
+  //   console.log('🔹 JWT Helper kaže da je istekao:', expired);
+
+  //   if (expired) {
+  //     console.warn('🚫 Token je istekao — korisnik će biti odjavljen.');
+  //     this.logout();
+  //   } else {
+  //     console.log('✅ Token je još važeći.');
+  //   }
+  //   } catch (e) {
+  //     console.error('❌ Greška pri dekodiranju tokena:', e);
+  //     this.logout();
+  //   }
+  // }
 }
