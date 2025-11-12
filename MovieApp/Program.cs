@@ -20,6 +20,7 @@ builder.Services.AddCors(options =>
         {
            policy
                .WithOrigins("http://localhost:4200",
+                   "https://movie-app-dun-iota.vercel.app/movies",
                    "https://movie-24dpy56bl-ivanas-projects-0b8587ba.vercel.app")
                .AllowAnyHeader()
                .AllowAnyMethod()
