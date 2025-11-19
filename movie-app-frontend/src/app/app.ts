@@ -17,7 +17,6 @@ export class App {
 
   ngOnInit() {
     this.authService.checkTokenExpiration();
-    console.log('App initialized');
   }
 
   changeLanguage(lang: 'en' | 'hr') {

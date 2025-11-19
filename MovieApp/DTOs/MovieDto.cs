@@ -8,4 +8,5 @@ public class MovieDto
     public int Year { get; set; }
     public double AverageRating { get; set; }
     public List<int> Ratings { get; set; } = new();
+    public int? UserRating { get; set; }
 }

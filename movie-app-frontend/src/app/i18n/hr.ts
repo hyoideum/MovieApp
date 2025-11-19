@@ -7,7 +7,6 @@ export const HR_STRINGS = {
     averageRating: 'Prosječna ocjena',
     yourRating: 'Vaša ocjena (1–10):',
     details: 'Detalji',
-    onlyLoggedIn: '🔒 Samo registirani korisnici mogu ocjenjivati filmove.',
     ratings: 'Ocjene',
     createMovie: 'Kreiraj film',
     movieTitle: 'Naslov filma',
@@ -17,7 +16,7 @@ export const HR_STRINGS = {
     sortRating: 'Ocjeni',
     order: 'Redosljed',
     orderAsc: 'Uzlazni',
-    orderDesc: 'Silazni'
+    orderDesc: 'Silazni',
   },
   formErrors: {
     required: 'Ovo polje je obavezno.',
@@ -30,6 +29,10 @@ export const HR_STRINGS = {
     submitError: 'Desila se greška prilikom ocjenjivanja.',
     logoutConfirm: 'Jeste li sigurni da se želite odjaviti?',
     logoutSuccessTitle: 'Odjavljeni ste.',
+    loginError: 'Neispravno korisničko ime ili lozinka.',
+    movieAdded: 'Film uspješno dodan!',
+    onlyLoggedIn: '🔒 Samo registirani korisnici mogu ocjenjivati filmove.',
+    errorLoadingMovies: 'Greška pri dohvaćanju filmova:'
   },
   routes: {
     movies: 'Filmovi',

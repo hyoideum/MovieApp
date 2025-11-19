@@ -38,7 +38,7 @@ export class CreateMovieComponent {
 
     this.movieService.postMovie(movie).subscribe({
       next: (data) => {
-        alert('Film uspješno dodan!');
+        alert(this.i18n.get("messages.movieAdded"));
         this.form.reset();
         this.router.navigate(['/']);
       }, error: (err) => {

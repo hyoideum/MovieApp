@@ -28,8 +28,7 @@ export class MovieService {
   }
 
   postRating(id: number, value: any): Observable<Movie> {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.post<Movie>(`${this.apiUrl}/${id}/ratings`, {value} , {headers});
+    return this.http.post<Movie>(`${this.apiUrl}/${id}/ratings`, value);
   }
 
   postMovie(movie: MovieDto): Observable<Movie> {

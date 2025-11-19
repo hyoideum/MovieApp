@@ -7,17 +7,17 @@
 
   <div class="sort-bar">
     <label for="sortSelect">{{ i18n.get('movies.sortBy') }}</label>
-      <select id="sortSelect" (change)="onSortChange($event)">
-        <option value="title">{{ i18n.get('movies.sortTitle') }}</option>
-        <option value="year">{{ i18n.get('movies.sortYear') }}</option>
-        <option value="rating">{{ i18n.get('movies.sortRating') }}</option>
-      </select>
+    <select id="sortSelect" (change)="onSortChange($event)">
+      <option value="title">{{ i18n.get('movies.sortTitle') }}</option>
+      <option value="year">{{ i18n.get('movies.sortYear') }}</option>
+      <option value="rating">{{ i18n.get('movies.sortRating') }}</option>
+    </select>
 
     <label for="orderSelect">{{ i18n.get('movies.order') }}</label>
-      <select id="orderSelect" (change)="onSortOrderChange($event)">
-        <option value="asc">{{ i18n.get('movies.orderAsc') }}</option>
-        <option value="desc">{{ i18n.get('movies.orderDesc') }}</option>
-      </select>
+    <select id="orderSelect" (change)="onSortOrderChange($event)">
+      <option value="asc">{{ i18n.get('movies.orderAsc') }}</option>
+      <option value="desc">{{ i18n.get('movies.orderDesc') }}</option>
+    </select>
   </div>
 
   @if (movies != undefined) {
@@ -26,25 +26,22 @@
         <div class="movie-card">
           <div class="movie-info">
             <h3 class="movie-title">{{ movie.title }}</h3>
-            <p class="movie-meta">
-              {{ movie.genre }} • {{ movie.year }}
-            </p>
+            <p class="movie-meta">{{ movie.genre }} • {{ movie.year }}</p>
             <p class="movie-rating">
               ⭐ {{ i18n.get("movies.averageRating") }}:
-              <strong>{{ (movie.averageRating | number : '1.2-2') || 'N/A' }}</strong>
+              <strong>{{ (movie.averageRating | number:'1.2-2') || 'N/A' }}</strong>
             </p>
-
-            <button class="btn-details" [routerLink]="['/movies', movie.id]">
-              {{ i18n.get('movies.details') }}
-            </button>
+            <button class="btn-details" [routerLink]="['/movies', movie.id]">{{ i18n.get('movies.details') }}</button>
           </div>
 
-          <form [formGroup]="form" (ngSubmit)="RateMovie(movie.id)" class="rating-form">
+          <div class="rating-form">
             @if (authService.isLoggedIn()) {
-              <label for="rating">{{ i18n.get('movies.yourRating') }} (1–10):</label>
+              <label>{{ i18n.get('movies.yourRating') }} (1–10):</label>
               <div class="rating-input-group">
-                <input id="rating" type="number" formControlName="rating" min="1" max="10" placeholder="1">
-                <button type="submit" class="btn-rate" [disabled]="form.invalid">
+                <input type="number" min="1" max="10"
+                       [(ngModel)]="tempRatings[movie.id]"
+                       [placeholder]="movie.userRating != null ? movie.userRating : '1'">
+                <button (click)="RateMovie(movie.id)" class="btn-rate">
                   {{ i18n.get('form.submit') }}
                 </button>
               </div>
@@ -62,22 +59,12 @@
                 {{ messages[movie.id].text }}
               </div>
             }
-          </form>
-
-          @if (form.get('rating')?.invalid && form.get('rating')?.touched) {
-            <div class="error">
-              @if (form.get('rating')?.errors?.['required']) {
-                <span>{{ i18n.get('formErrors.ratingRequired') }}</span>
-              }
-              @if (form.get('rating')?.errors?.['min'] || form.get('rating')?.errors?.['max']) {
-                <span>{{ i18n.get('formErrors.ratingRange') }}</span>
-              }
-            </div>
-          }
+          </div>
         </div>
       }
     </div>
   }
+
   @if (movies != undefined) {
     <div class="pagination">
       <button (click)="prevPage()" [disabled]="page === 1">‹</button>

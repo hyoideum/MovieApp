@@ -26,6 +26,9 @@ public class MoviesController : ControllerBase
     [HttpGet]
     public IActionResult GetMovies([FromQuery] int page = 1, [FromQuery] int pageSize = 10, [FromQuery] string sortBy = "title", [FromQuery] string sortOrder = "asc")
     {
+        var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = int.TryParse(userIdString, out var id) ? id : 0;
+        
         if (page < 1) page = 1;
         if (pageSize < 1) pageSize = 10;
         
@@ -58,6 +61,21 @@ public class MoviesController : ControllerBase
             .ToList();
 
         var moviesDto = _mapper.Map<List<MovieDto>>(movies);
+        
+        if (userId > 0)
+        {
+            foreach (var dto in moviesDto)
+            {
+                var movie = movies.First(m => m.Id == dto.Id);
+
+                var userRating = movie.Ratings
+                    .Where(r => r.UserId == userId)
+                    .Select(r => (int?)r.Value)
+                    .FirstOrDefault();
+
+                dto.UserRating = userRating;
+            }
+        }
 
         var result = new PagedResultDto<MovieDto>
         {
@@ -114,19 +132,19 @@ public class MoviesController : ControllerBase
         var existingRating = movie.Ratings.FirstOrDefault(r => r.UserId == userId);
         if (existingRating != null)
         {
-            return BadRequest("Već ste ocijenili ovaj film.");
+            existingRating.Value = ratingDto.Value;
+            _context.SaveChanges();
+            _context.Ratings.Update(existingRating);
         }
+        else
+        {
+            var rating = _mapper.Map<Rating>(ratingDto);
+            rating.MovieId = movie.Id;
+            rating.UserId = userId;
         
-        var rating = _mapper.Map<Rating>(ratingDto);
-        rating.MovieId = movie.Id;
-        rating.UserId = userId;
-        
-        _context.Ratings.Add(rating);
-        _context.SaveChanges();
-        
-        // movie = _context.Movies
-        //     .Include(m => m.Ratings)
-        //     .FirstOrDefault(m => m.Id == id);
+            _context.Ratings.Add(rating);
+            _context.SaveChanges();
+        }
         
         var movieDto = _mapper.Map<MovieDto>(movie);
         return Ok(movieDto);

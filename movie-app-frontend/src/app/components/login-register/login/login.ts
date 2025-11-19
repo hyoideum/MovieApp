@@ -28,7 +28,7 @@ export class LoginComponent {
 
     this.auth.login(this.form.value).subscribe({
       next: () => this.router.navigate(['/']),
-      error: () => (this.errorMessage = 'Neispravan email ili lozinka.')
+      error: () => (this.errorMessage = this.i18n.get("messages.loginError"))
     });
   }
 }

@@ -7,7 +7,6 @@ export const EN_STRINGS = {
     averageRating: 'Average rating',
     yourRating: 'Your rating (1–10):',
     details: 'Details',
-    onlyLoggedIn: '🔒 Only registered users can rate movies.',
     ratings: 'Ratings',
     createMovie: 'Create movie',
     movieTitle: 'Movie title',
@@ -30,6 +29,10 @@ export const EN_STRINGS = {
     submitError: 'There was an error submitting your rating.',
     logoutConfirm: 'Are you sure you want to logout?',
     logoutSuccessTitle: 'You are successfuly loged out.',
+    loginError: 'Invalid username or password.',
+    movieAdded: 'Movie added successfully!',
+    onlyLoggedIn: '🔒 Only registered users can rate movies.',
+    errorLoadingMovies: 'Movies loading error.'
   },
   routes: {
     movies: 'Movies',

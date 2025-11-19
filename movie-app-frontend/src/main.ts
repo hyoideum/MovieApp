@@ -5,8 +5,6 @@ import { routes } from './app/app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './app/interceptors/auth.interceptor';
 
-console.log("Starting app");
-
 bootstrapApplication(App, {
   providers: [
     provideRouter(routes), 
