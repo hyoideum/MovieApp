@@ -42,7 +42,7 @@ public class MoviesController : ControllerBase
     }
     
     [HttpPost]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> PostMovie([FromBody] CreateMovieDto createMovie)
     {
         if (!ModelState.IsValid)

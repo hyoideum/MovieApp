@@ -4,6 +4,7 @@ using MovieApp.Data;
 using MovieApp.DTOs;
 using MovieApp.Models;
 using MovieApp.Services;
+using MovieApp.Enums;
 
 namespace MovieApp.Controllers;
 
@@ -12,13 +13,11 @@ namespace MovieApp.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly AppDbContext _context;
-    private readonly IConfiguration _configuration;
     private readonly TokenService _tokenService;
 
-    public AuthController(AppDbContext context, IConfiguration configuration, TokenService tokenService)
+    public AuthController(AppDbContext context, TokenService tokenService)
     {
         _context = context;
-        _configuration = configuration;
         _tokenService = tokenService;
     }
 
@@ -37,7 +36,7 @@ public class AuthController : ControllerBase
             Username = dto.Username,
             PasswordHash = passwordHash,
             PasswordSalt = passwordSalt,
-            UserRole = Models.User.Role.User
+            Role = Role.User
         };
         
         _context.Users.Add(user);

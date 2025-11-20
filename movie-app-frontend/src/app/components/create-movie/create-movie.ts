@@ -14,7 +14,6 @@ import { I18nService } from '../../services/i18n.service';
   styleUrl: './create-movie.css'
 })
 export class CreateMovieComponent {
-  loading = true;
   form: any;
   message: string | null = null;
   serverErrors: any = {};
@@ -23,7 +22,7 @@ export class CreateMovieComponent {
     this.form = this.fb.group({
     title: ["", [Validators.required, Validators.maxLength(250)]],
     genre: ["", [Validators.required, Validators.maxLength(100)]],
-    year: [null, [Validators.required, Validators.min(1900), Validators.max(dateTimestampProvider.now())]]
+    year: [null, [Validators.required, Validators.min(1900), Validators.max(new Date().getFullYear())]]
     });
   }
 

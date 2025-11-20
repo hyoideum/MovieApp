@@ -1,7 +1,7 @@
 <nav class="navbar">
   <div class="nav-links">
     <a routerLink="/movies" routerLinkActive="active">{{ i18nService.get("routes.movies") }}</a>
-    @if (authService.isLoggedIn()) {
+    @if (authService.isLoggedIn() && authService.isAdmin()) {
       <a routerLink="/add-movie" routerLinkActive="active">{{ i18nService.get("routes.addMovie") }}</a>
     }
     <a routerLink="/login" routerLinkActive="active">{{ i18nService.get("routes.login") }}</a>

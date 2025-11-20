@@ -4,6 +4,8 @@ import { tap } from 'rxjs';
 import { environment } from '../../environments/environment.development';
 import { JwtHelperService } from '@auth0/angular-jwt';
 
+const ROLE_KEY = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
+
 @Injectable({
   providedIn: 'root'
 })
@@ -12,7 +14,7 @@ export class AuthService {
   private jwtHelper = new JwtHelperService();
   private apiUrl = `${environment.apiUrl}/auth`;
   private tokenKey = 'auth_token';
-
+  
   isLoggedIn = signal<boolean>(this.hasToken());
 
   constructor(private http: HttpClient) {
@@ -23,13 +25,25 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/register`, data);
   }
 
-   login(data: { username: string; password: string }) {
+  login(data: { username: string; password: string }) {
     return this.http.post<{ token: string }>(`${this.apiUrl}/login`, data).pipe(
       tap((response) => {
         localStorage.setItem(this.tokenKey, response.token);
         this.isLoggedIn.set(true);
       })
     );
+  }
+
+  getRole(): string | null {
+    const token = this.getToken();
+    if (!token) return null;
+
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload[ROLE_KEY] || null;
+  }
+
+  isAdmin(): boolean {
+    return this.getRole() === "Admin";
   }
 
   logout() {
