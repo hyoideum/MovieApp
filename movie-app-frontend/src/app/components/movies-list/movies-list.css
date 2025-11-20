@@ -198,3 +198,24 @@
 .sort-bar select:hover {
   background-color: #f0f0f0;
 }
+
+.stars {
+  display: flex;
+  gap: 4px;
+  margin: 6px 0;
+}
+
+.star {
+  font-size: 22px;
+  cursor: pointer;
+  color: #bbb;
+  transition: color 0.2s ease;
+}
+
+.star.filled {
+  color: gold;
+}
+
+.star:hover {
+  color: orange;
+}

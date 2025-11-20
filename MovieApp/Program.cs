@@ -6,6 +6,7 @@ using MovieApp.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using MovieApp.Repositories;
 using MovieApp.Services;
 using MovieApp.Validators;
 
@@ -53,6 +54,8 @@ var connectionString = Environment.GetEnvironmentVariable("DEFAULT_CONNECTION")
                        ?? builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
+builder.Services.AddScoped<IMovieRepository, MovieRepository>();
+builder.Services.AddScoped<IMovieService, MoviesService>();
 builder.Services.AddAuthorization();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddControllers();

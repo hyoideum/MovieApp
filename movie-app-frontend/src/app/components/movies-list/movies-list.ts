@@ -26,6 +26,7 @@ export class MoviesListComponent {
   totalCount: number = 0;
   totalPages: number = 1;
   loading = true;
+  stars = [1,2,3,4,5,6,7,8,9,10];
 
   tempRatings: { [movieId: number]: number | null } = {};
   messages: { [movieId: number]: { text: string, type: string, fade: boolean } } = {};
@@ -92,6 +93,14 @@ export class MoviesListComponent {
         setTimeout(() => delete this.messages[movieId], 3000);
       }
     });
+  }
+
+  setTempRating(movieId: number, value: number) {
+    this.tempRatings[movieId] = value;
+  }
+
+  isStarFilled(movieId: number, star: number): boolean {
+    return (this.tempRatings[movieId] || 0) >= star;
   }
 
   nextPage() {

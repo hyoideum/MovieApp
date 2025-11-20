@@ -2,7 +2,7 @@
   <h2 class="page-title">{{ i18n.get('movies.title') }}</h2>
 
   @if (loading) {
-    <div class="loading">{{ i18n.get('messages.loading') }}</div>
+  <div class="loading">{{ i18n.get('messages.loading') }}</div>
   }
 
   <div class="sort-bar">
@@ -21,59 +21,61 @@
   </div>
 
   @if (movies != undefined) {
-    <div class="movies-list">
-      @for (movie of movies; track movie.id) {
-        <div class="movie-card">
-          <div class="movie-info">
-            <h3 class="movie-title">{{ movie.title }}</h3>
-            <p class="movie-meta">{{ movie.genre }} • {{ movie.year }}</p>
-            <p class="movie-rating">
-              ⭐ {{ i18n.get("movies.averageRating") }}:
-              <strong>{{ (movie.averageRating | number:'1.2-2') || 'N/A' }}</strong>
-            </p>
-            <button class="btn-details" [routerLink]="['/movies', movie.id]">{{ i18n.get('movies.details') }}</button>
-          </div>
+  <div class="movies-list">
+    @for (movie of movies; track movie.id) {
+    <div class="movie-card">
+      <div class="movie-info">
+        <h3 class="movie-title">{{ movie.title }}</h3>
+        <p class="movie-meta">{{ movie.genre }} • {{ movie.year }}</p>
+        <p class="movie-rating">
+          ⭐ {{ i18n.get("movies.averageRating") }}:
+          <strong>{{ (movie.averageRating | number:'1.2-2') || 'N/A' }}</strong>
+        </p>
+        <button class="btn-details" [routerLink]="['/movies', movie.id]">{{ i18n.get('movies.details') }}</button>
+      </div>
 
-          <div class="rating-form">
-            @if (authService.isLoggedIn()) {
-              <label>{{ i18n.get('movies.yourRating') }} (1–10):</label>
-              <div class="rating-input-group">
-                <input type="number" min="1" max="10"
-                       [(ngModel)]="tempRatings[movie.id]"
-                       [placeholder]="movie.userRating != null ? movie.userRating : '1'">
-                <button (click)="RateMovie(movie.id)" class="btn-rate">
-                  {{ i18n.get('form.submit') }}
-                </button>
-              </div>
-            } @else {
-              <p class="login-warning">🔒 {{ i18n.get('movies.loginToRate') }}</p>
-            }
-
-            @if (messages[movie.id]) {
-              <div class="message"
-                [ngClass]="{
-                  'success': messages[movie.id].type === 'success',
-                  'error': messages[movie.id].type === 'error',
-                  'fade-out': messages[movie.id].fade
-                }">
-                {{ messages[movie.id].text }}
-              </div>
+      <div class="rating-form">
+        @if (authService.isLoggedIn()) {
+        <label>{{ i18n.get('movies.yourRating') }}:</label>
+        <div class="rating-input-group">
+          <div class="stars">
+            @for (star of stars; track star) {
+            <span class="star" [class.filled]="isStarFilled(movie.id, star)"
+              (click)="setTempRating(movie.id, star)">★</span>
             }
           </div>
         </div>
-      }
+        <button (click)="RateMovie(movie.id)" class="btn-rate">
+          {{ i18n.get('form.submit') }}
+        </button>
+        } @else {
+        <p class="login-warning">🔒 {{ i18n.get('movies.loginToRate') }}</p>
+        }
+
+        @if (messages[movie.id]) {
+        <div class="message" [ngClass]="{
+            'success': messages[movie.id].type === 'success',
+            'error': messages[movie.id].type === 'error',
+            'fade-out': messages[movie.id].fade
+         }">
+          {{ messages[movie.id].text }}
+        </div>
+        }
+      </div>
     </div>
+    }
+  </div>
   }
 
   @if (movies != undefined) {
-    <div class="pagination">
-      <button (click)="prevPage()" [disabled]="page === 1">‹</button>
-      <span>{{ i18n.get('movies.page') }} {{ page }} / {{ totalPages }}</span>
-      <button (click)="nextPage()" [disabled]="page * pageSize >= totalCount">›</button>
-    </div>
+  <div class="pagination">
+    <button (click)="prevPage()" [disabled]="page === 1">‹</button>
+    <span>{{ i18n.get('movies.page') }} {{ page }} / {{ totalPages }}</span>
+    <button (click)="nextPage()" [disabled]="page * pageSize >= totalCount">›</button>
+  </div>
   }
 
   @if (movies == undefined) {
-    <p class="no-movies">{{ i18n.get('movies.noMovies') }}</p>
+  <p class="no-movies">{{ i18n.get('movies.noMovies') }}</p>
   }
 </div>

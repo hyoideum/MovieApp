@@ -6,6 +6,7 @@ using MovieApp.Data;
 using MovieApp.DTOs;
 using MovieApp.Models;
 using System.Security.Claims;
+using MovieApp.Services;
 
 namespace MovieApp.Controllers;
 
@@ -13,140 +14,54 @@ namespace MovieApp.Controllers;
 [Route("api/[controller]")]
 public class MoviesController : ControllerBase
 {
-    private readonly AppDbContext _context;
-    private readonly IMapper _mapper;
+    private readonly IMovieService _service;
 
-    public MoviesController(AppDbContext context, IMapper mapper)
+    public MoviesController(IMovieService service)
     {
-        _context = context;
-        _mapper = mapper;
+        _service = service;
     }
-    
+
     // GET: api/movies
     [HttpGet]
-    public IActionResult GetMovies([FromQuery] int page = 1, [FromQuery] int pageSize = 10, [FromQuery] string sortBy = "title", [FromQuery] string sortOrder = "asc")
+    public async Task<IActionResult> GetMovies([FromQuery] int page = 1, [FromQuery] int pageSize = 10, [FromQuery] string sortBy = "title", [FromQuery] string sortOrder = "asc")
     {
         var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var userId = int.TryParse(userIdString, out var id) ? id : 0;
         
-        if (page < 1) page = 1;
-        if (pageSize < 1) pageSize = 10;
+        var result = await _service.GetMoviesAsync(page, pageSize, sortBy, sortOrder, userId);
         
-        var query = _context.Movies
-            .Include(m => m.Ratings)
-            .AsQueryable();
-        
-        query = sortBy.ToLower() switch
-        {
-            "year" => sortOrder == "desc"
-                ? query.OrderByDescending(m => m.Year)
-                : query.OrderBy(m => m.Year),
-
-            "rating" => sortOrder == "desc"
-                ? query.OrderByDescending(m => m.Ratings.Any() ? m.Ratings.Average(r => r.Value) : 0)
-                : query.OrderBy(m => m.Ratings.Any() ? m.Ratings.Average(r => r.Value) : 0),
-
-            "title" => sortOrder == "desc"
-                ? query.OrderByDescending(m => m.Title)
-                : query.OrderBy(m => m.Title),
-
-            _ => query.OrderBy(m => m.Title)
-        };
-
-        var totalCount = query.Count();
-        
-        var movies = query
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .ToList();
-
-        var moviesDto = _mapper.Map<List<MovieDto>>(movies);
-        
-        if (userId > 0)
-        {
-            foreach (var dto in moviesDto)
-            {
-                var movie = movies.First(m => m.Id == dto.Id);
-
-                var userRating = movie.Ratings
-                    .Where(r => r.UserId == userId)
-                    .Select(r => (int?)r.Value)
-                    .FirstOrDefault();
-
-                dto.UserRating = userRating;
-            }
-        }
-
-        var result = new PagedResultDto<MovieDto>
-        {
-            Items = moviesDto,
-            TotalCount = totalCount
-        };
-
         return Ok(result);
     }
 
-    [HttpGet("{id}")]
-    public IActionResult GetMovie(int id)
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> GetMovie(int id)
     {
-        var movie = _context.Movies
-            .Include(movie => movie.Ratings)
-            .FirstOrDefault(m => m.Id == id);
+        var result = await _service.GetMovieByIdAsync(id);
         
-        if (movie == null)
-            return NotFound();
-        
-        var movieDto = _mapper.Map<MovieDto>(movie);
-        return Ok(movieDto);
+        return Ok(result);
     }
     
     [HttpPost]
     [Authorize]
-    public IActionResult PostMovie([FromBody] CreateMovieDto createMovie)
+    public async Task<IActionResult> PostMovie([FromBody] CreateMovieDto createMovie)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
         
-        var movie = _mapper.Map<Movie>(createMovie);
-        _context.Movies.Add(movie);
-        _context.SaveChanges();
-        
-        var movieDto = _mapper.Map<MovieDto>(movie);
-        return CreatedAtAction(nameof(GetMovies), new { id= movie.Id }, movieDto);
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+        var movie = await _service.CreateMovieAsync(createMovie);
+        return CreatedAtAction(nameof(GetMovie), new { id = movie.Id }, movie);
     }
 
     [HttpPost("{id}/ratings")]
     [Authorize]
-    public IActionResult PostRating(int id, RatingDto ratingDto)
+    public async Task<IActionResult> PostRating(int id, RatingDto ratingDto)
     {
-        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-        if (userIdClaim == null)
-            return Unauthorized();
+        var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = int.TryParse(userIdString, out var uid) ? uid : 0;
         
-        var userId = int.Parse(userIdClaim.Value);
-
-        var movie = _context.Movies.Include(movie => movie.Ratings).FirstOrDefault(m => m.Id == id);
-        if (movie == null)
-            return NotFound();
+        var result = await  _service.RateMovieAsync(id, ratingDto.Value, userId);
         
-        var existingRating = movie.Ratings.FirstOrDefault(r => r.UserId == userId);
-        if (existingRating != null)
-        {
-            existingRating.Value = ratingDto.Value;
-            _context.SaveChanges();
-            _context.Ratings.Update(existingRating);
-        }
-        else
-        {
-            var rating = _mapper.Map<Rating>(ratingDto);
-            rating.MovieId = movie.Id;
-            rating.UserId = userId;
-        
-            _context.Ratings.Add(rating);
-            _context.SaveChanges();
-        }
-        
-        var movieDto = _mapper.Map<MovieDto>(movie);
-        return Ok(movieDto);
+        return Ok(result);
     }
 }
