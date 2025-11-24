@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.Extensions.Caching.Memory;
 using MovieApp.DTOs;
 using MovieApp.Models;
 using MovieApp.Repositories;
@@ -9,30 +10,41 @@ public class MoviesService(IMovieRepository repo, IMapper mapper) : IMovieServic
 {
     public async Task<PagedResultDto<MovieDto>> GetMoviesAsync(int page, int pageSize, string sortBy, string sortOrder, int? userId)
     {
+        
         var data = await repo.GetPagedMoviesAsync(page, pageSize, sortBy, sortOrder);
-        var dto = mapper.Map<List<MovieDto>>(data.Items);
 
-        if (userId != null)
+        var dtoList = mapper.Map<List<MovieDto>>(data.Items);
+
+        foreach (var movieDto in dtoList)
         {
-            foreach (var movieDto in dto)
-            {
-                var movie = data.Items.First(m => m.Id == movieDto.Id);
-                var rating = movie.Ratings.FirstOrDefault(r => r.UserId == userId);
-                movieDto.UserRating = rating?.Value;
-            }
+            var movie = data.Items.First(m => m.Id == movieDto.Id);
+
+            movieDto.AverageRating = CalculateAverageRating(movie);
+
+            movieDto.UserRating = GetUserRating(movie, userId);
         }
 
-        return new PagedResultDto<MovieDto>
+        var result = new PagedResultDto<MovieDto>
         {
-            Items = dto,
-            TotalCount = data.TotalCount
+            Items = dtoList,
+            TotalCount = data.TotalCount,
+            PageSize = pageSize,
+            CurrentPage = page
         };
+            
+        return result;
     }
 
     public async Task<MovieDto?> GetMovieByIdAsync(int id)
     {
         var movie = await repo.GetByIdWithRatingsAsync(id);
-        return movie == null ? null : mapper.Map<MovieDto>(movie);
+        if (movie == null) return null;
+
+        var dto = mapper.Map<MovieDto>(movie);
+
+        dto.AverageRating = CalculateAverageRating(movie);
+
+        return dto;
     }
 
     public async Task<MovieDto> CreateMovieAsync(CreateMovieDto createMovie)
@@ -40,7 +52,10 @@ public class MoviesService(IMovieRepository repo, IMapper mapper) : IMovieServic
         var movie = mapper.Map<Movie>(createMovie);
         await repo.AddMovieAsync(movie);
         await repo.SaveChangesAsync();
-        return mapper.Map<MovieDto>(movie);
+
+        var dto = mapper.Map<MovieDto>(movie);
+        dto.AverageRating = 0;
+        return dto;
     }
 
     public async Task<MovieDto?> RateMovieAsync(int movieId, int ratingValue, int userId)
@@ -49,8 +64,11 @@ public class MoviesService(IMovieRepository repo, IMapper mapper) : IMovieServic
         if (movie == null) return null;
 
         var existing = movie.Ratings.FirstOrDefault(r => r.UserId == userId);
+
         if (existing != null)
+        {
             existing.Value = ratingValue;
+        }
         else
         {
             var rating = new Rating
@@ -63,6 +81,23 @@ public class MoviesService(IMovieRepository repo, IMapper mapper) : IMovieServic
         }
 
         await repo.SaveChangesAsync();
-        return mapper.Map<MovieDto>(movie);
+        
+
+        var dto = mapper.Map<MovieDto>(movie);
+
+        dto.AverageRating = CalculateAverageRating(movie);
+
+        dto.UserRating = GetUserRating(movie, userId);
+
+        return dto;
     }
+    
+    private double CalculateAverageRating(Movie movie) =>
+        movie.Ratings.Any() ? Math.Round(movie.Ratings.Average(r => r.Value), 2) : 0;
+    
+    private int? GetUserRating(Movie movie, int? userId) =>
+        userId != null ? movie.Ratings.FirstOrDefault(r => r.UserId == userId)?.Value : null;
+    
 }
+
+

@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using MovieApp.Data;
+using MovieApp.DTOs;
 using MovieApp.Models;
-using MovieApp.Repositories.Models;
+using MovieApp.DTOs;
 
 namespace MovieApp.Repositories;
 
@@ -13,12 +14,16 @@ public class MovieRepository(AppDbContext dbContext) : IMovieRepository
     {
         return await _context.Movies
             .Include(m => m.Ratings)
+            .AsNoTracking()
             .FirstOrDefaultAsync(m => m.Id == id);
     }
 
-    public async Task<PagedResult<Movie>> GetPagedMoviesAsync(int page, int pageSize, string sortBy, string sortOrder)
+    public async Task<PagedResultDto<Movie>> GetPagedMoviesAsync(int page, int pageSize, string sortBy, string sortOrder)
     {
-        var query = _context.Movies.Include(m => m.Ratings).AsQueryable();
+        var query = _context.Movies
+            .Include(m => m.Ratings)
+            .AsNoTracking()
+            .AsQueryable();
 
         query = sortBy.ToLower() switch
         {
@@ -33,10 +38,12 @@ public class MovieRepository(AppDbContext dbContext) : IMovieRepository
         var total = await query.CountAsync();
         var items = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
 
-        return new PagedResult<Movie>
+        return new PagedResultDto<Movie>
         {
             Items = items,
-            TotalCount = total
+            TotalCount = total,
+            CurrentPage = page,
+            PageSize = pageSize,
         };
     }
 

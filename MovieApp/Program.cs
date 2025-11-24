@@ -6,6 +6,7 @@ using MovieApp.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using MovieApp.Middleware;
 using MovieApp.Repositories;
 using MovieApp.Services;
 using MovieApp.Validators;
@@ -65,6 +66,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<CreateRatingDtoValidator>()
 builder.Services.AddValidatorsFromAssemblyContaining<CreateMovieDtoValidator>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddMemoryCache();
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "MovieApp API", Version = "v1" });
@@ -96,6 +98,7 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseCors("AllowAngularClient");
 app.UseAuthentication();
 app.UseAuthorization();

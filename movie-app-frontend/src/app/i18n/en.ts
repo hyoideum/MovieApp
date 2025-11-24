@@ -16,7 +16,8 @@ export const EN_STRINGS = {
     sortRating: 'Rating',
     order: 'Order',
     orderAsc: 'Ascending',
-    orderDesc: 'Descending'
+    orderDesc: 'Descending',
+    search: 'Search movies'
   },
   formErrors: {
     required: 'This field is required.',

@@ -1,9 +1,10 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Movie } from '../models/movie';
-import { MovieDto } from '../models/dtos/movieDto';
+import { Movie, Rating } from '../models/movie';
+import { MovieDto, RatingDto } from '../models/dtos/movieDto';
 import { environment } from '../../environments/environment.development';
+import { PagedResultDto } from '../models/dtos/PagedResultDto';
 
 @Injectable({
   providedIn: 'root'
@@ -13,21 +14,21 @@ export class MovieService {
 
   constructor(private http: HttpClient) {}
 
-  getMovies(page: number = 1, pageSize: number = 10, sortBy: string = 'title', sortOrder: string = 'asc'): Observable<{items: Movie[], totalCount: number}> {
+  getMovies(page: number = 1, pageSize: number = 10, sortBy: string = 'title', sortOrder: string = 'asc'): Observable<PagedResultDto<Movie>> {
      let params = new HttpParams()
       .set('page', page)
       .set('pageSize', pageSize)
       .set('sortBy', sortBy)
       .set('sortOrder', sortOrder);
       
-    return this.http.get<{items: Movie[], totalCount: number }>(this.apiUrl, {params});
+    return this.http.get<PagedResultDto<Movie>>(this.apiUrl, {params});
   }
 
   getMovieDetails(id: number): Observable<Movie> {
     return this.http.get<Movie>(`${this.apiUrl}/${id}`);
   }
 
-  postRating(id: number, value: any): Observable<Movie> {
+  postRating(id: number, value: RatingDto): Observable<Movie> {
     return this.http.post<Movie>(`${this.apiUrl}/${id}/ratings`, value);
   }
 

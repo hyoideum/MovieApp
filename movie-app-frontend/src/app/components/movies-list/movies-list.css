@@ -219,3 +219,36 @@
 .star:hover {
   color: orange;
 }
+
+.movies-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.movies-header .page-title {
+  font-size: 26px;
+  font-weight: 600;
+  text-align: center;
+  margin: 0;
+}
+
+.movies-header .search-container {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end; 
+  margin-top: 8px;
+}
+
+.movies-header .search-input {
+  width: 200px;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  text-align: left;
+}

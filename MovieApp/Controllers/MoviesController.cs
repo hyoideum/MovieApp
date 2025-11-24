@@ -21,12 +21,11 @@ public class MoviesController : ControllerBase
         _service = service;
     }
 
-    // GET: api/movies
     [HttpGet]
     public async Task<IActionResult> GetMovies([FromQuery] int page = 1, [FromQuery] int pageSize = 10, [FromQuery] string sortBy = "title", [FromQuery] string sortOrder = "asc")
     {
         var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var userId = int.TryParse(userIdString, out var id) ? id : 0;
+        var userId = int.TryParse(userIdString, out var id) ? id : (int?)null;
         
         var result = await _service.GetMoviesAsync(page, pageSize, sortBy, sortOrder, userId);
         
@@ -37,6 +36,8 @@ public class MoviesController : ControllerBase
     public async Task<IActionResult> GetMovie(int id)
     {
         var result = await _service.GetMovieByIdAsync(id);
+        
+        if (result == null) return NotFound();
         
         return Ok(result);
     }

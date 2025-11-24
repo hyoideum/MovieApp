@@ -17,6 +17,7 @@ export const HR_STRINGS = {
     order: 'Redosljed',
     orderAsc: 'Uzlazni',
     orderDesc: 'Silazni',
+    search: 'Pretraži filmove'
   },
   formErrors: {
     required: 'Ovo polje je obavezno.',

@@ -10,5 +10,5 @@ export interface Movie {
   year: number;
   averageRating?: number;
   ratings?: Rating[];
-  userRating: number;
+  userRating?: number;
 }

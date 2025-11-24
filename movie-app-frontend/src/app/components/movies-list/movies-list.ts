@@ -6,6 +6,8 @@ import { Movie } from '../../models/movie';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { I18nService } from '../../services/i18n.service';
+import { RatingDto } from '../../models/dtos/movieDto';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-movies-list',
@@ -18,15 +20,16 @@ export class MoviesListComponent {
   @Input() initialValue?: number | null;
   @Output() ratingChanged = new EventEmitter<number>();
 
+  allMovies: Movie[] = [];
   movies: Movie[] = [];
   page: number = 1;
   pageSize: number = 5;
+  totalPages: number = 0;
   sortBy: string = 'title';
   sortOrder: string = 'asc';
-  totalCount: number = 0;
-  totalPages: number = 1;
   loading = true;
-  stars = [1,2,3,4,5,6,7,8,9,10];
+  stars = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  searchTerm$ = new Subject<string>();
 
   tempRatings: { [movieId: number]: number | null } = {};
   messages: { [movieId: number]: { text: string, type: string, fade: boolean } } = {};
@@ -35,20 +38,29 @@ export class MoviesListComponent {
     private movieService: MovieService,
     public authService: AuthService,
     public i18n: I18nService
-  ) {
+  ) { }
+
+  ngOnInit() {
     this.loadMovies();
+
+    this.searchTerm$
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged()
+      )
+      .subscribe(term => {
+        this.applyFilter(term);
+      });
   }
 
   loadMovies() {
     this.loading = true;
     this.movieService.getMovies(this.page, this.pageSize, this.sortBy, this.sortOrder).subscribe({
       next: (data) => {
-        this.movies = data.items;
-        this.totalCount = data.totalCount;
-        this.totalPages = Math.ceil(this.totalCount / this.pageSize);
-
-        // postavi tempRatings za svaki film (placeholder / početna vrijednost)
-        this.movies.forEach(movie => {
+        this.allMovies = data.items;
+        this.movies = [...this.allMovies];
+        this.totalPages = data.totalPages;
+        this.allMovies.forEach(movie => {
           this.tempRatings[movie.id] = movie.userRating || null;
         });
 
@@ -65,20 +77,19 @@ export class MoviesListComponent {
     const ratingValue = this.tempRatings[movieId];
     if (!ratingValue || ratingValue < 1 || ratingValue > 10) return;
 
-    const ratingDto = { value: ratingValue };
+    const ratingDto: RatingDto = { value: ratingValue };
 
     this.movieService.postRating(movieId, ratingDto).subscribe({
       next: (data) => {
         this.messages[movieId] = { text: 'Hvala! Vaša ocjena je zabilježena.', type: 'success', fade: false };
 
-        const movie = this.movies.find(m => m.id === movieId);
+        const movie = this.allMovies.find(m => m.id === movieId);
         if (movie) {
           movie.userRating = ratingValue;
           movie.averageRating = data.averageRating;
         }
 
-        setTimeout(() => this.messages[movieId].fade = true, 2500);
-        setTimeout(() => delete this.messages[movieId], 3000);
+        this.fadeMessage(movieId);
       },
       error: (err) => {
         if (err.status === 400 && err.error && typeof err.error === 'string' && err.error.includes('ocijenili')) {
@@ -89,8 +100,7 @@ export class MoviesListComponent {
           this.messages[movieId] = { text: 'Došlo je do greške pri slanju ocjene.', type: 'error', fade: false };
         }
 
-        setTimeout(() => this.messages[movieId].fade = true, 2500);
-        setTimeout(() => delete this.messages[movieId], 3000);
+        this.fadeMessage(movieId);
       }
     });
   }
@@ -104,7 +114,7 @@ export class MoviesListComponent {
   }
 
   nextPage() {
-    if (this.page * this.pageSize < this.totalCount) {
+    if (this.page < this.totalPages) {
       this.page++;
       this.loadMovies();
     }
@@ -125,5 +135,26 @@ export class MoviesListComponent {
   onSortOrderChange(event: any) {
     this.sortOrder = event.target.value;
     this.loadMovies();
+  }
+
+  fadeMessage(movieId: number, delay: number = 2500) {
+    setTimeout(() => this.messages[movieId].fade = true, delay);
+    setTimeout(() => delete this.messages[movieId], delay + 500);
+  }
+
+  onSearchChange(term: string) {
+    this.searchTerm$.next(term);
+  }
+
+  applyFilter(term: string) {
+    if (!term) {
+      this.movies = [...this.allMovies];
+    } else {
+      const lowerTerm = term.toLowerCase();
+      this.movies = this.allMovies.filter(m =>
+        m.title.toLowerCase().includes(lowerTerm) ||
+        m.genre.toLowerCase().includes(lowerTerm)
+      );
+    }
   }
 }
