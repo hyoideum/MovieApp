@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { MovieService } from '../../services/movie.service';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -57,7 +57,13 @@ export class MoviesListComponent {
     this.loading = true;
     this.movieService.getMovies(this.page, this.pageSize, this.sortBy, this.sortOrder).subscribe({
       next: (data) => {
-        this.allMovies = data.items;
+        if (this.page === 1) {
+          this.allMovies = data.items;
+        } else {
+          this.allMovies.push(...data.items);
+        }
+
+        this.movies = [...this.allMovies];
         this.movies = [...this.allMovies];
         this.totalPages = data.totalPages;
         this.allMovies.forEach(movie => {

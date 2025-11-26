@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Movie, Rating } from '../models/movie';
+import { Movie } from '../models/movie';
 import { MovieDto, RatingDto } from '../models/dtos/movieDto';
 import { environment } from '../../environments/environment.development';
 import { PagedResultDto } from '../models/dtos/PagedResultDto';
