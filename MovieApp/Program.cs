@@ -67,6 +67,8 @@ builder.Services.AddValidatorsFromAssemblyContaining<CreateMovieDtoValidator>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddMemoryCache();
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "MovieApp API", Version = "v1" });
