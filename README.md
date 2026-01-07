@@ -1,11 +1,11 @@
 #MovieApp – Full Stack Web Application
 
-MovieApp je full-stack web aplikacija za pregled i ocjenjivanje filmova.  
-Aplikacija omogućava registraciju korisnika, autentikaciju, pregled filmova, dodavanje ocjena te upload slika za filmove.
+MovieApp is a full-stack web application for browsing and rating movies.
+The application allows users to register, authenticate, browse movies, rate them, and upload images for movies.
 
-👉 **Aplikacija je dostupna online:**  
-🔗 Frontend: https://movie-app-dun-iota.vercel.app  
-🔗 Backend API: https://movieapp-api.onrender.com *(primjer – prilagodi ako treba)*
+The application is live and available online:
+- Frontend: https://movie-app-dun-iota.vercel.app  
+- Backend API: https://movieapp-api.onrender.com *(primjer – prilagodi ako treba)*
 
 ---
 
@@ -31,14 +31,14 @@ Aplikacija omogućava registraciju korisnika, autentikaciju, pregled filmova, do
 
 ## Features
 
-- User registration & login (JWT)
-- Zaštićene rute (authorization guards)
-- CRUD operacije nad filmovima
-- Upload slika za filmove
-- Prikaz filmova s prosječnom ocjenom
-- Ocjenjivanje filmova (1–10)
+- User registration and login (JWT authentication)
+- Role-based authorization and protected routes
+- CRUD operations for movies
+- Image upload for movies
+- Display of movies with average rating
+- Movie rating system (1–10)
 - Infinite scroll (lazy loading)
-- Pretraga i sortiranje filmova
+- Search and sorting of movies
 - Internationalization (i18n)
 
 ---
@@ -47,34 +47,53 @@ Aplikacija omogućava registraciju korisnika, autentikaciju, pregled filmova, do
 
 # Backend Architecture
 - Controller → Service → Repository pattern
-- DTOs za komunikaciju s API-jem
-- Global Exception Handling Middleware
+- DTOs for API communication
+- Global exception handling middleware
 - Dependency Injection
 - Async / Await
-- JWT-based authentication & authorization
+- JWT-based authentication and authorization
 
 # Frontend Concepts
 - Separation of concerns (services, components)
-- Route guards za zaštićene stranice
-- HTTP interceptors za JWT token
-- Reactive programming (RxJS)
-- Lazy loading podataka (IntersectionObserver)
+- Route guards for protected pages
+- HTTP interceptors for JWT token handling
+- Reactive programming with RxJS
+- Lazy loading using IntersectionObserver
 
 ---
 
 ## Image Handling
 
-Slike filmova se spremaju na backend server (`wwwroot/images`),  
-dok se u bazi podataka sprema samo URL slike.
+Movie images are stored on the backend server (wwwroot/images),
+while only the image URL is stored in the database.
+
+This approach improves performance and keeps the database lightweight.
 
 ---
 
 ## Environment Variables
 
-Backend koristi sljedeće environment varijable:
+The backend uses the following environment variables:
 
-```env
 DEFAULT_CONNECTION=postgres_connection_string
 JWT_KEY=your_secret_key
 JWT_ISSUER=your_issuer
 JWT_AUDIENCE=your_audience
+
+---
+
+## Project Status
+
+- This project is actively developed and serves as a learning project focused on:
+- Full-stack web development
+- Clean architecture
+- Modern Angular and .NET practices
+
+## How would I Scale the Application
+
+- Database Optimization – Use indexing, query optimization, and connection pooling to handle higher traffic and reduce latency.
+- Caching – Implement server-side caching (e.g., Redis) for frequently accessed data like movie lists and ratings.
+- Load Balancing – Deploy multiple backend instances behind a load balancer to distribute requests evenly.
+- Cloud Storage for Images – Move movie images to cloud storage (e.g., AWS S3, Azure Blob Storage) instead of storing them on the backend server.
+- Asynchronous Processing – Use background jobs or message queues for heavy tasks like sending emails or processing images.
+- Frontend Optimization – Enable lazy loading of components and assets, compress images, and use CDNs for static content.
