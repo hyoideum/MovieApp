@@ -4,8 +4,8 @@ MovieApp is a full-stack web application for browsing and rating movies.
 The application allows users to register, authenticate, browse movies, rate them, and upload images for movies.
 
 The application is live and available online:
-- Frontend: https://movie-app-dun-iota.vercel.app  
-- Backend API: https://movieapp-api.onrender.com *(primjer – prilagodi ako treba)*
+- Frontend: https://movie-app-dun-iota.vercel.app/movies
+- Backend API: https://movieapp-0c5b.onrender.com/ 
 
 ---
 
